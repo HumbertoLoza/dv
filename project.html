@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <script src='https://d3js.org/d3.v5.min.js'></script>
+    </head>
+    <style>
+        .header {
+            font: bold 30px sans-serif;
+        }
+        .body {
+            font: 25px sans-serif;
+            line-break: auto;
+            text-wrap: pretty;
+            display: inline-block;
+        }
+    </style>
+    <body>
+        <svg id="header" width="100%" height="40%" style="display: inline-block;">
+            <text class="header" x="50" y="50" id="title">
+                The best cuisines around the world
+            </text>
+            <foreignObject x="20" y="70" width="100%" height="100%" id="header_exp">
+                <div class="body" id="headerExp">
+                    The World Cup of Food is a tournament designed to determine which world cuisine is the greatest. This site
+                    is aimed to providing useful information about sites where you can get the world's greatest food in the US.
+                </div>
+            </foreignObject> 
+        </svg>
+        <svg id="main" width="100%" height="1000"></svg>
+        <script>
+            maindata = d3.csv('https://raw.githubusercontent.com/HumbertoLoza/dv/main/maindata.csv')
+            cuisines_data = []
+            selected_country = null
+            function initialize(data) {
+                cuisines_data = data
+                d3.select('#main')
+                .append('g')
+                .attr('transform', 'translate(0, 0)')
+                .attr('height', '1000')
+                .selectAll()
+                .data(data)
+                .enter()
+                .append('svg:image')
+                .attr('xlink:href', function (d, i) {
+                    path = 'https://flagsapi.com/' + d.Flag.toUpperCase().trim() +  '/flat/64.png'
+                    return path
+                })
+                .attr('width', '150')
+                .attr('height', '150')
+                .attr('x', function(d, i) {
+                    return 160 * parseInt(i % 3)
+                })
+                .attr('y', function(d, i) {
+                    return 160 * parseInt(i / 3)
+                })
+                .attr('onmouseover', function(d, i) { return 'loadCuisine("' + i + '")' } )
+            }
+
+            function loadCuisine(country) {
+                d3.select('#header').selectAll('*').remove()
+                selected_country = cuisines_data[country]
+                body = 'Rating: ' + selected_country.measure_values
+                createMainTemplate(selected_country.measure_name, body)
+                loadCuisineView(selected_country.Flag)
+            }
+
+            function createMainTemplate(title, body) {
+                d3.select('#header').selectAll('*').remove()
+                d3.select('#header')
+                .append('text')
+                .attr('class', 'header')
+                .attr('x', '50')
+                .attr('y', '50')
+                .text(title)
+                d3.select('#header')
+                .append('text')
+                .attr('x', '20')
+                .attr('y', '90')
+                .attr('width', '100%')
+                .attr('height', '100%')
+                .attr('id', 'header_exp')
+                .attr('class', 'body')
+                .text(body)
+
+            }
+
+            function loadCuisineView(country) {
+                console.log('Looking for ' + country)
+                recipesdata = d3.csv('https://raw.githubusercontent.com/HumbertoLoza/dv/main/recipes.csv')
+                recipesdata.then(function(data) {
+                    has_country = false
+                    recipes = data.filter((row) => row.Country == country)
+                    if(recipes.length == 0) {
+                        detail = 'There are no recipes for ' + country 
+                        createMainTemplate('Recipes not found', detail)
+                        return
+                    }
+                    console.log(recipes)
+                    createMainTemplate('Recipes for ' + country)
+                    loadRecipesInMainView()
+                    // debugger
+                    g = buildMainView()
+                    g.selectAll()
+                    .data(recipes).enter()
+                    .append('text')
+                    .attr('x', '20')
+                    .attr('y', function(d, i) { return (i * 30) })
+                    .text(function(d) { return d['Recipe Title'] })
+                })
+            }
+
+            function loadRecipesInMainView(recipes) {
+
+            }
+
+            function buildMainView() {
+                d3.select('#main').selectAll('*').remove()
+                g  = d3.select('#main').append('g')
+                .attr("transform", "translate(100, 50)")
+                return g
+            }
+
+            function addImagesToCanvas() {
+
+            }
+
+            function addTextToCanvas(g, text_arr) {
+            }
+            maindata.then(initialize)
+        </script>
+    </body>
+</html>
