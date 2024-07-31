@@ -1,12 +1,11 @@
-measure_name,measure_values,Flag,
-Vietnam,3.576107900,VN,
-United States,3.870604782,US,
-Thailand,3.962382445,TH,
-South Korea,3.327231121,KR,
-Mexico,4.111576011,MX,
-Italy,4.488505747,IT,
-India,3.690721649,IN,
-Greece,3.939759036,GR,
-France,3.944858420,FR,
-China,3.809248555,CN,
-Brazil,3.657276995,BR,
+measure_name,measure_values,Flag,Description
+Vietnam,3.576107900,VN,"Vietnamese cuisine is renowned for its fresh, vibrant flavors, and delicate balance of tastes. Influenced by French, Chinese, and indigenous cultures, it has evolved into a unique and beloved culinary tradition."
+United States,3.870604782,US,"American cuisine is a fascinating blend of culinary traditions from around the world, shaped by the country's rich history of immigration and regional diversity. While there's no single definitive 'American' taste, certain dishes and styles have become iconic."
+Thailand,3.962382445,TH,"Thai cuisine is renowned for its complex and harmonious blend of sweet, sour, salty, and spicy flavors. It’s a cuisine that celebrates fresh ingredients, bold spices, and aromatic herbs."
+South Korea,3.327231121,KR,"Korean cuisine, often referred to as hansik, is characterized by its balance of flavors, vibrant colors, and the extensive use of fresh ingredients. It's a cuisine that celebrates the harmony of taste, texture, and presentation."
+Mexico,4.111576011,MX,"Mexican cuisine is a vibrant and diverse tapestry of flavors, reflecting the country's rich cultural heritage. It's a cuisine that celebrates fresh ingredients, bold spices, and ancient cooking techniques."
+Italy,4.488505747,IT,"Korean cuisine, often referred to as hansik, is characterized by its balance of flavors, vibrant colors, and the extensive use of fresh ingredients. It's a cuisine that celebrates the harmony of taste, texture, and presentation."
+India,3.690721649,IN,"Indian cuisine is a vast and diverse culinary landscape, reflecting the country's rich cultural heritage. Known for its complex blend of spices, aromatic herbs, and flavorful ingredients, it offers a truly unforgettable sensory experience."
+Greece,3.939759036,GR,"Greek cuisine is a celebration of fresh, simple ingredients and vibrant flavors. Rooted in Mediterranean traditions, it emphasizes the use of olive oil, fresh produce, and seafood."
+France,3.944858420,FR,"French cuisine is often considered the pinnacle of culinary artistry, renowned for its elegance, sophistication, and emphasis on high-quality ingredients. It's a cuisine that celebrates diversity, with distinct regional flavors and techniques."
+China,3.809248555,CN,"Chinese cuisine is one of the world's most diverse and influential culinary traditions. With a history spanning thousands of years, it boasts a rich tapestry of flavors, techniques, and regional specialties."
