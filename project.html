@@ -29,8 +29,8 @@
         </svg>
         <svg id="main" width="100%" height="1000"></svg>
         <script>
-            const maindata = d3.csv('https://raw.githubusercontent.com/HumbertoLoza/dv/main/maindata.csv')
-            const cuisines_data = []
+            var maindata = d3.csv('https://raw.githubusercontent.com/HumbertoLoza/dv/main/maindata.csv')
+            var cuisines_data = []
             
             var selected_country = null
             function initialize(data) {
