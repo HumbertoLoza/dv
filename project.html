@@ -2,6 +2,7 @@
 <html>
     <head>
         <script src='https://d3js.org/d3.v5.min.js'></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/d3-annotation/2.5.1/d3-annotation.min.js" integrity="sha512-iBAeBWWWFb8HqSBcrqcz98iIpuVH1la39dEYHtyQ/pGpeCQTQVvLJOWAuhv2Q7JSHp9k7hWA7sGxU3hHJe+tFg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     </head>
     <style>
         .header {
@@ -28,9 +29,10 @@
         </svg>
         <svg id="main" width="100%" height="1000"></svg>
         <script>
-            maindata = d3.csv('https://raw.githubusercontent.com/HumbertoLoza/dv/main/maindata.csv')
-            cuisines_data = []
-            selected_country = null
+            const maindata = d3.csv('https://raw.githubusercontent.com/HumbertoLoza/dv/main/maindata.csv')
+            const cuisines_data = []
+            
+            var selected_country = null
             function initialize(data) {
                 cuisines_data = data
                 d3.select('#main')
@@ -54,6 +56,7 @@
                     return 160 * parseInt(i / 3)
                 })
                 .attr('onmouseover', function(d, i) { return 'loadCuisine("' + i + '")' } )
+                .attr('onclick', function(d, i) { return 'showCountryDetail("' + i + '")' } )
             }
 
             function loadCuisine(country) {
@@ -61,6 +64,17 @@
                 selected_country = cuisines_data[country]
                 body = 'Rating: ' + selected_country.measure_values
                 createMainTemplate(selected_country.measure_name, body)
+                d3.select('#header')
+                .append('text')
+                .attr('x', '20')
+                .attr('y', '120')
+                .attr('width', '100%')
+                .attr('height', '70%')
+                .text(selected_country.Description)
+            }
+
+            function showCountryDetail(country) {
+                selected_country = cuisines_data[country]
                 loadCuisineView(selected_country.Flag)
             }
 
@@ -77,7 +91,7 @@
                 .attr('x', '20')
                 .attr('y', '90')
                 .attr('width', '100%')
-                .attr('height', '100%')
+                .attr('height', '30%')
                 .attr('id', 'header_exp')
                 .attr('class', 'body')
                 .text(body)
@@ -96,9 +110,10 @@
                         return
                     }
                     console.log(recipes)
-                    createMainTemplate('Recipes for ' + country)
+                    createMainTemplate('Recipes for ' + country, 'Click here for restaurants information from the Yelp dataset!')
+                    d3.select('#header')
+                    .attr('onclick', 'loadYelpData("' + country + '")')
                     loadRecipesInMainView()
-                    // debugger
                     g = buildMainView()
                     g.selectAll()
                     .data(recipes).enter()
@@ -123,6 +138,90 @@
             function addImagesToCanvas() {
 
             }
+
+            function loadYelpData(country) {
+                yelpdata = d3.csv('https://raw.githubusercontent.com/HumbertoLoza/dv/main/yelp.csv')
+                yelpdata.then(function(data) {
+                    country_data = data.filter((row) => row.Country == country)
+                    createMainTemplate('Yelp data for ' + country, '')
+                    g = buildMainView()
+                    render_data(country_data)
+                    render_share(country_data)
+                })
+            }
+
+            function render_data(data) {
+                xs = d3.scaleLog([10, 150], [0, 200])
+                ys = d3.scaleLog([10, 150], [200, 0])
+                d3.select('#main').
+                    append('g')
+                    .attr('transform', 'translate(150,50)')
+                    .selectAll()
+                    .data(data)
+                    .enter()
+                    .append('circle')
+                    .attr('cx', function(d, i) { return xs(d['Review Count']); })
+                    .attr('cy', function(d, i) { return ys(d['Review Count']); })
+                    .attr('r', function(d) { return 2 })
+
+                d3.select('#main').append('g')
+                    .attr("transform","translate(150,50)")
+                    .call(d3.axisLeft(ys).tickValues([10, 20, 50, 100]))
+
+                d3.select('#main').append('g')
+                    .attr("transform","translate(150,250)")
+                    .call(d3.axisBottom(xs).tickValues([10, 20, 50, 100]))
+
+            }
+
+            function render_share(data) {
+                var data_dict = {}
+                for(i in data) {
+                    row = data[i]
+                    if (row.State in data_dict) {
+                        data_dict[row.State]++
+                    } else {
+                        data_dict[row.State] = 1
+                    }
+                }
+                var render_data = []
+                var keys = []
+                for (var key in data_dict) {
+                    render_data.push(data_dict[key])
+                    keys.push(key)
+                }
+                var makeAnnotations = d3.annotation()
+                .editMode(true)
+                //also can set and override in the note.padding property
+                //of the annotation object
+                .notePadding(15)
+                .type(d3.annotationLabel)
+                //accessors & accessorsInverse not needed
+                //if using x, y in annotations JSON
+                .accessors({
+                    x: d => x(parseTime(d.date)),
+                    y: d => y(d.close)
+                })
+                .accessorsInverse({
+                    date: d => timeFormat(x.invert(d.x)),
+                    close: d => y.invert(d.y)
+                })
+                .annotations(annotations)
+                var color = d3.quantize(t => d3.interpolateSpectral(t * 0.8 + 0.1), keys.length);
+                var pie = d3.pie();
+                var arc = d3.arc().innerRadius(0).outerRadius(100);
+                d3.select('#main')
+                .append('g')
+                .attr('transform', 'translate(150,550)')
+                .selectAll()
+                .data(pie(render_data))
+                .enter()
+                .append('path')
+                .attr('d', arc)
+                .attr('fill', function(d, i) { return color[i] })
+
+            }
+
 
             function addTextToCanvas(g, text_arr) {
             }
